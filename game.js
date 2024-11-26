@@ -2,8 +2,8 @@ function setup() {
   createCanvas(800, 600);
 }
 
-let speed = 5;
 let gameState = "park";
+let gameLives = 3;
 
 function parkScreen() {
   background(66, 184, 61);
@@ -42,43 +42,63 @@ function parkScreen() {
 }
 
 class Car {
-  constructor(x, y, lenght, height) {
+  constructor(x, r, g, b, speed) {
     this.x = x;
-    this.y = y;
-    this.lenght = lenght;
-    this.height = height;
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.speed = speed;
   }
   draw() {
     push();
     translate(0, 0);
-    rect(this.x, this.y, this.lenght, this.height);
+    fill(this.r - 50, this.g - 50, this.b - 50);
+    noStroke();
+    rect(this.x, 435, 100, 50);
+    fill(this.r, this.g, this.b);
+    rect(this.x + 20, 440, 60, 40);
     pop();
 
+    if (gameState === "park") {
+      this.speed = 0;
+    } else if (gameState === "street") {
+      this.speed = 6;
+    } else if (gameState === "wall") {
+      this.speed = 8;
+    }
+
     if (this.x <= 800) {
-      this.x = this.x + 1 * speed;
+      this.x = this.x + this.speed;
     } else if (this.x > 800) {
-      this.x = 0 - this.lenght;
+      this.x = 0 - 100;
     }
   }
 }
 
-const firstCar = new Car(50, 100, 100, 50);
-const secondCar = new Car(0, 300, 100, 50);
-const thirdCar = new Car(150, 300, 100, 50);
+const car1 = new Car(0, 255, 255, 0);
+const car2 = new Car(450, 0, 255, 255);
+const car3 = new Car(600, 255, 0, 255);
+
+let cars = [car1, car2, car3];
 
 function draw() {
   if (gameState === "start") {
     background(227, 152, 173);
   } else if (gameState === "park") {
     parkScreen();
-
-    //firstCar.draw();
-    //secondCar.draw();
-    //thirdCar.draw();
+    car1.draw();
+    car2.draw();
+    car3.draw();
   } else if (gameState === "street") {
     background(50, 50, 50);
-  } else if (gameState === "brickWall") {
+    car1.draw();
+    car2.draw();
+    car3.draw();
+  } else if (gameState === "wall") {
     background(186, 94, 63);
+    car1.draw();
+    car2.draw();
+    car3.draw();
   } else if (gameState === "end") {
     background(115, 65, 125);
   }
