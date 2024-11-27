@@ -1,10 +1,10 @@
-let img;
+let img1;
 let img2;
 let gameState = "start";
 let gameLives = 3;
 
 function setup() {
-  img = loadImage("startscreen.png");
+  img1 = loadImage("startscreen.png");
   img2 = loadImage("endscreen.png");
   createCanvas(800, 600);
 }
@@ -169,7 +169,7 @@ class Car {
     } else if (gameState === "parkInfo") {
       this.speed = 4;
     } else if (gameState === "street") {
-      this.speed = 0;
+      this.speed = 6;
     } else if (gameState === "wall") {
       this.speed = 8;
     }
@@ -230,7 +230,7 @@ let cars = [car1a, car1b, car1c];
 
 function draw() {
   if (gameState === "start") {
-    image(img, 0, 40);
+    image(img1, 0, 40);
     startButton(520, 440);
   } else if (gameState === "parkInfo") {
     parkScreen();
