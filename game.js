@@ -1,6 +1,6 @@
 let img1;
 let img2;
-let gameState = "start";
+let gameState = "park";
 let gameLives = 3;
 
 function setup() {
@@ -8,6 +8,8 @@ function setup() {
   img2 = loadImage("endscreen.png");
   createCanvas(800, 600);
 }
+
+function character(x, y) {}
 
 function startScreen() {
   image(img1, 0, 0);
@@ -168,18 +170,6 @@ class Car extends Carfunction {
   constructor(x, y, r, g, b, speed) {
     super(x, y, r, g, b, speed);
   }
-  draw() {}
-}
-
-class CarBack {
-  constructor(x, y, r, g, b, speed) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.speed = speed;
-  }
   draw() {
     push();
     translate(0, 0);
@@ -190,28 +180,9 @@ class CarBack {
     rect(this.x + 20, this.y + 5, 60, 40);
     pop();
   }
-  update() {
-    if (gameState === "park") {
-      this.speed = 4;
-    } else if (gameState === "parkInfo") {
-      this.speed = 4;
-    } else if (gameState === "street") {
-      this.speed = 6;
-    } else if (gameState === "wall") {
-      this.speed = 8;
-    }
-
-    if (this.x > -100) {
-      this.x = this.x - this.speed;
-    } else if (this.x <= -100) {
-      this.x = 800 + 100;
-    }
-  }
 }
 
-const car1a = new Car(0, 0, 0, 0, 0);
-
-const car2b = new CarBack(300, 355, 255, 255, 255);
+const car1a = new Car(10, 435, 255, 255, 0);
 
 let cars = [car1a];
 
@@ -225,6 +196,8 @@ function draw() {
       cars[i].draw();
       cars[i].update();
     }
+
+    character(100, 100);
   } else if (gameState === "street") {
     streetScreen();
 
