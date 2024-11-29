@@ -234,12 +234,14 @@ function draw() {
     startButton(520, 440);
   } else if (gameState === "parkInfo") {
     parkScreen();
-    parkInfo();
 
     for (let i = 0; i < 3; i++) {
       cars[i].draw();
       cars[i].update();
     }
+
+    parkInfo();
+
   } else if (gameState === "park") {
     parkScreen();
 
@@ -275,5 +277,13 @@ function mouseClicked() {
     mouseY < 525
   ) {
     gameState = "parkInfo";
+  } else if ( 
+    gameState === "parkInfo" &&
+    mouseX > 345 &&
+    mouseX < 475 &&
+    mouseY > 445 &&
+    mouseY < 500
+  ) {
+    gameState = "park";
   }
 }
