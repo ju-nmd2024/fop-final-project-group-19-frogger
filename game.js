@@ -9,7 +9,9 @@ function setup() {
   createCanvas(800, 600);
 }
 
-function character(x, y) {}
+function character() {
+  ellipse(100, 100, 100);
+}
 
 function startScreen() {
   image(img1, 0, 0);
@@ -181,7 +183,6 @@ class Car extends Carfunction {
     pop();
   }
 }
-
 const car1a = new Car(10, 435, 255, 255, 0);
 
 let cars = [car1a];
@@ -192,12 +193,12 @@ function draw() {
   } else if (gameState === "park") {
     parkScreen();
 
-    for (let i = 0; i < 3; i++) {
-      cars[i].draw();
-      cars[i].update();
-    }
+    // for (let i = 0; i < 3; i++) {
+    //   cars[i].draw();
+    //   cars[i].update();
+    // }
 
-    character(100, 100);
+    character();
   } else if (gameState === "street") {
     streetScreen();
 
