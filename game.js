@@ -9,7 +9,11 @@ function setup() {
   createCanvas(800, 600);
 }
 
-function character(x, y) {}
+function character(x, y) {
+  //cat
+  fill(255, 255, 255);
+  ellips(x, y, 45);
+}
 
 function startScreen() {
   image(img1, 0, 0);
