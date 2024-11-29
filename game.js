@@ -9,6 +9,10 @@ function setup() {
   createCanvas(800, 600);
 }
 
+function startScreen() {
+  image(img1, 0, 0);
+}
+
 function parkScreen() {
   background(66, 184, 61);
   // Grass
@@ -246,14 +250,6 @@ function draw() {
 
 function mouseClicked() {
   if (
-    gameState === "start" &&
-    mouseX > 515 &&
-    mouseX < 745 &&
-    mouseY > 435 &&
-    mouseY < 525
-  ) {
-    gameState = "parkInfo";
-  } else if (
     gameState === "parkInfo" &&
     mouseX > 345 &&
     mouseX < 475 &&
