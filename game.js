@@ -1,38 +1,13 @@
-function setup() {
-  createCanvas(800, 600);
-}
-
+let img1;
+let img2;
 let gameState = "start";
 let gameLives = 3;
 
-function startScreen(){
-background(255, 255, 255);
-
-//sky
-push();
-noStroke();
-fill(214, 174, 210);
-rect(0, 0, 800, 390);
-fill(165, 130, 237, 80);
-ellipse(400, 300, 800, 390);
-fill(98, 67, 161, 90);
-ellipse(400, 350, 800, 290);
-pop();
-
-//roof
-push();
-noStroke();
-fill(38, 34, 33);
-rect(0, 390, 800);
-fill(36, 34, 34);
-rect(0, 390, 800, 50);
-pop();
-
-//hose
-
+function setup() {
+  img1 = loadImage("startscreen.png");
+  img2 = loadImage("endscreen.png");
+  createCanvas(800, 600);
 }
-
-
 
 function parkScreen() {
   background(66, 184, 61);
@@ -70,6 +45,24 @@ function parkScreen() {
   pop();
 }
 
+function parkInfo() {
+  strokeWeight(5);
+  stroke(0, 0, 0);
+  fill(0, 0, 0, 150);
+  rect(100, 50, 600, 350);
+
+  rect(330, 450, 140, 50);
+
+  let infoText = "Hey you!";
+
+  noStroke();
+  fill(255, 255, 255);
+  textSize(20);
+  textFont("Courier New");
+
+  text(infoText, 150, 150);
+}
+
 function streetScreen() {
   push();
   background(50, 50, 50);
@@ -90,12 +83,52 @@ function streetScreen() {
   rect(0, 345, 800, 5);
 
   fill(145, 167, 186, 150);
-  ellipse(60, 220, 200, 50);
-  ellipse(170, 390, 150, 50);
-  ellipse(350, 385, 200, 60);
-  ellipse(350, 385, 100, 50);
-  ellipse(500, 380, 150, 50);
+  ellipse(60, 215, 200, 50);
+  ellipse(170, 220, 150, 50);
+  ellipse(350, 215, 200, 60);
+  ellipse(350, 215, 100, 50);
+  ellipse(500, 210, 150, 50);
+  ellipse(700, 210, 200, 50);
+  ellipse(710, 210, 90, 40);
+  ellipse(590, 230, 40, 20);
   pop();
+}
+
+function wallScreen() {
+  push();
+  background(135, 60, 27);
+
+  noStroke();
+  fill(92, 40, 17);
+  rect(0, 0, 800, 100);
+  rect(0, 500, 800, 100);
+  rect(0, 260, 800, 80);
+
+  fill(166, 106, 80);
+  rect(0, 105, 800, 5);
+  rect(0, 175, 800, 5);
+  rect(0, 250, 800, 5);
+
+  rect(0, 490, 800, 5);
+  rect(0, 420, 800, 5);
+  rect(0, 345, 800, 5);
+  pop();
+
+  fill(166, 106, 80);
+  strokeWeight(6);
+  stroke(166, 106, 80);
+  line(200, 110, 200, 175);
+  line(400, 110, 400, 175);
+  line(600, 110, 600, 175);
+  line(100, 250, 100, 180);
+  line(300, 250, 300, 180);
+  line(500, 250, 500, 180);
+  line(700, 250, 700, 180);
+
+  line(200, 350, 200, 420);
+  line(400, 350, 400, 420);
+  line(600, 350, 600, 420);
+  line(100, 350, 100, 420);
 }
 
 class Car {
@@ -120,8 +153,10 @@ class Car {
   update() {
     if (gameState === "park") {
       this.speed = 4;
+    } else if (gameState === "parkInfo") {
+      this.speed = 4;
     } else if (gameState === "street") {
-      this.speed = 0;
+      this.speed = 6;
     } else if (gameState === "wall") {
       this.speed = 8;
     }
@@ -134,28 +169,6 @@ class Car {
   }
 }
 
-/*class CarBack extends Car {
-  constructor(x, y, r, g, b, speed){
-    super(x, y, r, g , b, speed);
-  }
-
-  update(){
-    if (gameState === "park") {
-      this.speed = 4;
-    }  else if (gameState === "street") {
-      this.speed = 6;
-    } else if (gameState === "wall") {
-      this.speed = 8;
-    }
-
-    if (this.x <= 800) {
-      this.x = this.x - this.speed;
-    } else if (this.x > 800) {
-      this.x = 800 + 100;
-    }
-  }
-}
-*/
 class CarBack {
   constructor(x, y, r, g, b, speed) {
     this.x = x;
@@ -178,6 +191,8 @@ class CarBack {
   update() {
     if (gameState === "park") {
       this.speed = 4;
+    } else if (gameState === "parkInfo") {
+      this.speed = 4;
     } else if (gameState === "street") {
       this.speed = 6;
     } else if (gameState === "wall") {
@@ -192,11 +207,11 @@ class CarBack {
   }
 }
 
-const car1a = new Car(0, 435, 255, 0, 255, 1);
-const car1b = new Car(200, 435, 0, 255, 255, 1);
-const car1c = new Car(400, 435, 255, 255, 0, 1);
+const car1a = new Car(0, 435, 255, 0, 255);
+const car1b = new Car(200, 435, 0, 255, 255);
+const car1c = new Car(400, 435, 255, 255, 0);
 
-const car2b = new CarBack(300, 355, 255, 255, 255, 1);
+const car2b = new CarBack(300, 355, 255, 255, 255);
 
 let cars = [car1a, car1b, car1c];
 
@@ -205,39 +220,46 @@ function draw() {
     startScreen();
   } else if (gameState === "park") {
     parkScreen();
-    car1a.draw();
-    car1a.update();
 
-    car1b.draw();
-    car1b.update();
-
-    car1c.draw();
-    car1c.update();
-
-    car2b.draw();
-    car2b.update();
+    for (let i = 0; i < 3; i++) {
+      cars[i].draw();
+      cars[i].update();
+    }
   } else if (gameState === "street") {
     streetScreen();
 
-    car1a.draw();
-    car1a.update();
-
-    car1b.draw();
-    car1b.update();
-
-    car1c.draw();
-    car1c.update();
+    for (let i = 0; i < 3; i++) {
+      cars[i].draw();
+      cars[i].update();
+    }
   } else if (gameState === "wall") {
-    background(186, 94, 63);
-    car1a.draw();
-    car1a.update();
+    wallScreen();
 
-    car1b.draw();
-    car1b.update();
-
-    car1c.draw();
-    car1c.update();
+    for (let i = 0; i < 3; i++) {
+      cars[i].draw();
+      cars[i].update();
+    }
   } else if (gameState === "end") {
     background(115, 65, 125);
+  }
+}
+
+function mouseClicked() {
+  if (
+    gameState === "start" &&
+    mouseX > 515 &&
+    mouseX < 745 &&
+    mouseY > 435 &&
+    mouseY < 525
+  ) {
+    gameState = "parkInfo";
+  } else if (
+    gameState === "parkInfo" &&
+    mouseX > 345 &&
+    mouseX < 475 &&
+    mouseY > 445 &&
+    mouseY < 500
+  ) {
+    gameState = "park";
   }
 }
