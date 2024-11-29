@@ -2,8 +2,37 @@ function setup() {
   createCanvas(800, 600);
 }
 
-let gameState = "street";
+let gameState = "start";
 let gameLives = 3;
+
+function startScreen(){
+background(255, 255, 255);
+
+//sky
+push();
+noStroke();
+fill(214, 174, 210);
+rect(0, 0, 800, 390);
+fill(165, 130, 237, 80);
+ellipse(400, 300, 800, 390);
+fill(98, 67, 161, 90);
+ellipse(400, 350, 800, 290);
+pop();
+
+//roof
+push();
+noStroke();
+fill(38, 34, 33);
+rect(0, 390, 800);
+fill(36, 34, 34);
+rect(0, 390, 800, 50);
+pop();
+
+//hose
+
+}
+
+
 
 function parkScreen() {
   background(66, 184, 61);
@@ -173,7 +202,7 @@ let cars = [car1a, car1b, car1c];
 
 function draw() {
   if (gameState === "start") {
-    background(227, 152, 173);
+    startScreen();
   } else if (gameState === "park") {
     parkScreen();
     car1a.draw();
