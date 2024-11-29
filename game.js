@@ -135,7 +135,7 @@ function wallScreen() {
   line(100, 350, 100, 420);
 }
 
-class Car {
+class Carfunction {
   constructor(x, y, r, g, b, speed) {
     this.x = x;
     this.y = y;
@@ -144,16 +144,7 @@ class Car {
     this.b = b;
     this.speed = speed;
   }
-  draw() {
-    push();
-    translate(0, 0);
-    fill(this.r - 50, this.g - 50, this.b - 50);
-    noStroke();
-    rect(this.x, this.y, 100, 50);
-    fill(this.r, this.g, this.b);
-    rect(this.x + 20, this.y + 5, 60, 40);
-    pop();
-  }
+
   update() {
     if (gameState === "park") {
       this.speed = 4;
@@ -171,6 +162,13 @@ class Car {
       this.x = 0 - 100;
     }
   }
+}
+
+class Car extends Carfunction {
+  constructor(x, y, r, g, b, speed) {
+    super(x, y, r, g, b, speed);
+  }
+  draw() {}
 }
 
 class CarBack {
@@ -211,13 +209,11 @@ class CarBack {
   }
 }
 
-const car1a = new Car(0, 435, 255, 0, 255);
-const car1b = new Car(200, 435, 0, 255, 255);
-const car1c = new Car(400, 435, 255, 255, 0);
+const car1a = new Car(0, 0, 0, 0, 0);
 
 const car2b = new CarBack(300, 355, 255, 255, 255);
 
-let cars = [car1a, car1b, car1c];
+let cars = [car1a];
 
 function draw() {
   if (gameState === "start") {
