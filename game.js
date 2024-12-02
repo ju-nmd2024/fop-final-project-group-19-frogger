@@ -2,11 +2,29 @@ let img1;
 let img2;
 let gameState = "park";
 let gameLives = 3;
+let catX = 400;
+let catY = 550;
 
 function setup() {
   img1 = loadImage("startscreen.png");
   img2 = loadImage("endscreen.png");
   createCanvas(800, 600);
+}
+
+function character(x,y){
+    //cat
+    push();
+    noStroke();
+    fill(222, 205, 177);
+    ellipse(x, y, 45);
+    ellipse(x , y-30, 30, 25);
+    triangle(x-20, y-45, x-15, y-30, x-10, y- 40);
+    triangle(x+20, y-45, x+10, y-40, x+15, y-30);
+    beginShape();
+    vertex(x+5, y+20);
+    bezierVertex(x+5, y+45, x-50, y+25, x-50, y-10);
+    endShape();
+    pop();
 }
 //image for start screen
 function startScreen() {
@@ -281,6 +299,8 @@ function draw() {
       loggForward[i].draw();
       loggForward[i].update();
     }
+    character(catX, catY);
+
   } else if (gameState === "street") {
     streetScreen();
 
@@ -297,6 +317,21 @@ function draw() {
     }
   } else if (gameState === "end") {
     background(115, 65, 125);
+  }
+}
+
+function keyPressed(){
+  if (keyCode === UP_ARROW && catY>80){
+    catY = catY - 80;
+  }
+  else if(keyCode === DOWN_ARROW && catY<540){
+    catY = catY + 80;
+  }
+  if (keyCode === LEFT_ARROW && catX > 90) {
+    catX = catX - 80;
+  }
+  else if (keyCode === RIGHT_ARROW && catX < 710){
+    catX = catX + 80;
   }
 }
 
