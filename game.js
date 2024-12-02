@@ -8,11 +8,11 @@ function setup() {
   img2 = loadImage("endscreen.png");
   createCanvas(800, 600);
 }
-
+//image for start screen
 function startScreen() {
   image(img1, 0, 0);
 }
-
+//background for first game screen
 function parkScreen() {
   background(66, 184, 61);
   // Grass
@@ -48,7 +48,7 @@ function parkScreen() {
 
   pop();
 }
-
+//text bubble for first game screen
 function parkInfo() {
   strokeWeight(5);
   stroke(0, 0, 0);
@@ -66,7 +66,7 @@ function parkInfo() {
 
   text(infoText, 150, 150);
 }
-
+//background for second game screen
 function streetScreen() {
   push();
   background(50, 50, 50);
@@ -97,7 +97,7 @@ function streetScreen() {
   ellipse(590, 230, 40, 20);
   pop();
 }
-
+//background for third game screen
 function wallScreen() {
   push();
   background(135, 60, 27);
@@ -134,15 +134,16 @@ function wallScreen() {
   line(600, 350, 600, 420);
   line(100, 350, 100, 420);
 }
-
+//method for obscales moving forwards
 class Carfunction {
-  constructor(x, y, r, g, b, speed) {
+  constructor(x, y, r, g, b, speed, addSpeed) {
     this.x = x;
     this.y = y;
     this.r = r;
     this.g = g;
     this.b = b;
     this.speed = speed;
+    this.addSpeed = addSpeed;
   }
 
   update() {
@@ -157,16 +158,46 @@ class Carfunction {
     }
 
     if (this.x <= 800) {
-      this.x = this.x + this.speed;
+      this.x = this.x + (this.speed + this.addSpeed);
     } else if (this.x > 800) {
       this.x = 0 - 100;
     }
   }
 }
+//method for obstacles moving forwards
+class CarfunctionBack {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.speed = speed;
+    this.addSpeed = addSpeed;
+  }
 
+  update() {
+    if (gameState === "park") {
+      this.speed = 4;
+    } else if (gameState === "parkInfo") {
+      this.speed = 4;
+    } else if (gameState === "street") {
+      this.speed = 6;
+    } else if (gameState === "wall") {
+      this.speed = 8;
+    }
+
+    if (this.x >= 0) {
+      this.x = this.x - (this.speed + this.addSpeed);
+    } else if (this.x < 0) {
+      this.x = 800 + 100;
+    }
+  }
+}
+//design for cars on screen 1 and two moving forwards
 class Car extends Carfunction {
-  constructor(x, y, r, g, b, speed) {
-    super(x, y, r, g, b, speed);
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
   }
   draw() {
     push();
@@ -179,9 +210,34 @@ class Car extends Carfunction {
     pop();
   }
 }
-const car1a = new Car(10, 435, 255, 255, 0);
+//design for cars on screen 1 and 2 moving backwards
+class CarBack extends CarfunctionBack {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
+  }
+  draw() {
+    push();
+    translate(0, 0);
+    fill(this.r - 50, this.g - 50, this.b - 50);
+    noStroke();
+    rect(this.x, this.y, 100, 50);
+    fill(this.r, this.g, this.b);
+    rect(this.x + 20, this.y + 5, 60, 40);
+    pop();
+  }
+}
+//car objects
+const car1a = new Car(100, 435, 255, 255, 0, 0, 0);
+const car1b = new Car(300, 435, 0, 255, 255, 0, 0);
+const car1c = new Car(600, 435, 255, 0, 255, 0, 0);
+const car1d = new Car(700, 355, 255, 255, 255, 0, 1);
+const car1e = new Car(0, 355, 255, 255, 100, 0, 1);
+const car1f = new Car(450, 355, 0, 0, 100, 0, 1);
 
-let cars = [car1a];
+const car2a = new CarBack(200, 115, 200, 200, 200, 0, 0);
+//car arrays
+let carsForward = [car1a, car1b, car1c, car1d, car1e, car1f];
+let carsBackward = [car2a];
 
 function draw() {
   if (gameState === "start") {
@@ -189,25 +245,28 @@ function draw() {
   } else if (gameState === "park") {
     parkScreen();
 
-    // for (let i = 0; i < 3; i++) {
-    //   cars[i].draw();
-    //   cars[i].update();
-    // }
+    for (let i = 0; i < 6; i++) {
+      carsForward[i].draw();
+      carsForward[i].update();
+    }
 
-    character();
+    for (let i = 0; i < 1; i++) {
+      carsBackward[i].draw();
+      carsBackward[i].update();
+    }
   } else if (gameState === "street") {
     streetScreen();
 
     for (let i = 0; i < 3; i++) {
-      cars[i].draw();
-      cars[i].update();
+      carsForward[i].draw();
+      carsForward[i].update();
     }
   } else if (gameState === "wall") {
     wallScreen();
 
     for (let i = 0; i < 3; i++) {
-      cars[i].draw();
-      cars[i].update();
+      carsForward[i].draw();
+      carsForward[i].update();
     }
   } else if (gameState === "end") {
     background(115, 65, 125);
