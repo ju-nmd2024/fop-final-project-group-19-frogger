@@ -164,7 +164,7 @@ class Carfunction {
     }
   }
 }
-//method for obstacles moving forwards
+//method for obstacles moving backwards
 class CarfunctionBack {
   constructor(x, y, r, g, b, speed, addSpeed) {
     this.x = x;
@@ -187,9 +187,9 @@ class CarfunctionBack {
       this.speed = 8;
     }
 
-    if (this.x >= 0) {
+    if (this.x >= -180) {
       this.x = this.x - (this.speed + this.addSpeed);
-    } else if (this.x < 0) {
+    } else if (this.x < -180) {
       this.x = 800 + 100;
     }
   }
@@ -226,6 +226,24 @@ class CarBack extends CarfunctionBack {
     pop();
   }
 }
+
+// design for loggs
+class LoggForward extends CarfunctionBack {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
+  }
+  draw() {
+    push();
+    translate(0, 0);
+    noStroke();
+    fill(this.r, this.g, this.b);
+    rect(this.x, this.y, 180, 60, 20);
+    fill(this.r + 20, this.g + 20, this.b + 20);
+    rect(this.x + 5, this.y + 5, 20, 50, 20);
+    pop();
+  }
+}
+
 //car objects
 const car1a = new Car(100, 435, 255, 255, 0, 0, 0);
 const car1b = new Car(300, 435, 0, 255, 255, 0, 0);
@@ -234,10 +252,15 @@ const car1d = new Car(700, 355, 255, 255, 255, 0, 1);
 const car1e = new Car(0, 355, 255, 255, 100, 0, 1);
 const car1f = new Car(450, 355, 0, 0, 100, 0, 1);
 
-const car2a = new CarBack(200, 115, 200, 200, 200, 0, 0);
+const car2a = new CarBack(200, 115, 200, 200, 200, 0, 2);
+const car2b = new CarBack(700, 115, 250, 250, 200, 0, 2);
+const logg1a = new LoggForward(100, 190, 102, 61, 46, 0, 0);
+const logg1b = new LoggForward(400, 190, 102, 61, 46, 0, 0);
+const logg1c = new LoggForward(700, 190, 102, 61, 46, 0, 0);
 //car arrays
 let carsForward = [car1a, car1b, car1c, car1d, car1e, car1f];
-let carsBackward = [car2a];
+let carsBackward = [car2a, car2b];
+let loggForward = [logg1a, logg1b, logg1c];
 
 function draw() {
   if (gameState === "start") {
@@ -250,9 +273,13 @@ function draw() {
       carsForward[i].update();
     }
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 2; i++) {
       carsBackward[i].draw();
       carsBackward[i].update();
+    }
+    for (let i = 0; i < 3; i++) {
+      loggForward[i].draw();
+      loggForward[i].update();
     }
   } else if (gameState === "street") {
     streetScreen();
