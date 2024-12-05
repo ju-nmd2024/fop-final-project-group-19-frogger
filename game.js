@@ -3,7 +3,7 @@ let img2;
 let img3;
 let img4;
 
-let gameState = "win";
+let gameState = "start";
 let gameLives = 3;
 let catX = 400;
 let catY = 550;
