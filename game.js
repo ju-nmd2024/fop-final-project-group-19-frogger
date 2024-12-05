@@ -1,6 +1,7 @@
 let img1;
 let img2;
-let gameState = "street";
+let img3;
+let gameState = "park";
 let gameLives = 3;
 let catX = 400;
 let catY = 550;
@@ -8,9 +9,10 @@ let catY = 550;
 function setup() {
   img1 = loadImage("startscreen.png");
   img2 = loadImage("endscreen.png");
+  img3 = loadImage("verysadcat.png");
   createCanvas(800, 600);
 }
-
+// cat
 function character(x, y) {
   //cat
   push();
@@ -65,24 +67,6 @@ function parkScreen() {
   rect(0, 435, 800, 50);
 
   pop();
-}
-//text bubble for first game screen
-function parkInfo() {
-  strokeWeight(5);
-  stroke(0, 0, 0);
-  fill(0, 0, 0, 150);
-  rect(100, 50, 600, 350);
-
-  rect(330, 450, 140, 50);
-
-  let infoText = "Hey you!";
-
-  noStroke();
-  fill(255, 255, 255);
-  textSize(20);
-  textFont("Courier New");
-
-  text(infoText, 150, 150);
 }
 //background for second game screen
 function streetScreen() {
@@ -150,10 +134,16 @@ function wallScreen() {
   line(200, 350, 200, 420);
   line(400, 350, 400, 420);
   line(600, 350, 600, 420);
-  line(100, 350, 100, 420);
+  line(100, 425, 100, 490);
+  line(300, 425, 300, 490);
+  line(500, 425, 500, 490);
+  line(700, 425, 700, 490);
 }
+
+//you lost a life screen
+
 //method for car like obscales moving forwards
-class carFunctionForward {
+class carMethodForward {
   constructor(x, y, r, g, b, speed, addSpeed) {
     this.x = x;
     this.y = y;
@@ -187,7 +177,7 @@ class carFunctionForward {
   }
 }
 //method for car like obstacles moving backwards
-class carFunctionBack {
+class carMethodBack {
   constructor(x, y, r, g, b, speed, addSpeed) {
     this.x = x;
     this.y = y;
@@ -197,7 +187,7 @@ class carFunctionBack {
     this.speed = speed;
     this.addSpeed = addSpeed;
   }
-
+  // checks gamestate
   update() {
     if (gameState === "park") {
       this.speed = 4;
@@ -208,13 +198,13 @@ class carFunctionBack {
     } else if (gameState === "wall") {
       this.speed = 8;
     }
-
+    //moves the obstacle
     if (this.x >= -180) {
       this.x = this.x - (this.speed + this.addSpeed);
     } else if (this.x < -180) {
       this.x = 800 + 100;
     }
-
+    //checks for collision
     if (catY === this.y + 35 && catX > this.x && catX < this.x + 100) {
       gameState = "end";
     }
@@ -222,10 +212,10 @@ class carFunctionBack {
 }
 
 //method for logg type obstacles
-class loggFunctionForward {
+class loggMethodForward {
   constructor(x, y, r, g, b, speed, addSpeed) {
-    this.x = x;
-    this.y = y;
+    this.loggX = x;
+    this.loggY = y;
     this.r = r;
     this.g = g;
     this.b = b;
@@ -234,6 +224,7 @@ class loggFunctionForward {
   }
 
   update() {
+    // checks gamestate
     if (gameState === "park") {
       this.speed = 4;
     } else if (gameState === "parkInfo") {
@@ -244,19 +235,28 @@ class loggFunctionForward {
       this.speed = 8;
     }
 
-    if (this.x <= 800) {
-      this.x = this.x + (this.speed + this.addSpeed);
-    } else if (this.x > 800) {
-      this.x = 0 - 180;
+    // moves obstacle
+    if (this.loggX <= 800) {
+      this.loggX = this.loggX + (this.speed + this.addSpeed);
+    } else if (this.loggX > 800) {
+      this.loggX = -180;
     }
 
-    if (catY === this.y + 40 && catX > this.x && catX < this.x + 100) {
-      gameState = "park";
+    // checks for collision
+    if (catY === this.loggY + 40) {
+      if (catX > this.loggX && catX < this.loggX + 180) {
+        isOnLogg = true;
+        catX = catX + this.speed + this.addSpeed;
+      }
+      if (!isOnLogg) {
+        gameState = "end";
+      }
     }
   }
 }
+
 //design for cars on screen 1 and two moving forwards
-class CarForward extends carFunctionForward {
+class CarForward extends carMethodForward {
   constructor(x, y, r, g, b, speed, addSpeed) {
     super(x, y, r, g, b, speed, addSpeed);
   }
@@ -272,7 +272,7 @@ class CarForward extends carFunctionForward {
   }
 }
 //design for cars on screen 1 and 2 moving backwards
-class CarBackward extends carFunctionBack {
+class CarBackward extends carMethodBack {
   constructor(x, y, r, g, b, speed, addSpeed) {
     super(x, y, r, g, b, speed, addSpeed);
   }
@@ -287,9 +287,8 @@ class CarBackward extends carFunctionBack {
     pop();
   }
 }
-
 // design for loggs
-class LoggForward extends loggFunctionForward {
+class LoggForward extends loggMethodForward {
   constructor(x, y, r, g, b, speed, addSpeed) {
     super(x, y, r, g, b, speed, addSpeed);
   }
@@ -298,9 +297,82 @@ class LoggForward extends loggFunctionForward {
     translate(0, 0);
     noStroke();
     fill(this.r, this.g, this.b);
-    rect(this.x, this.y, 180, 60, 20);
+    rect(this.loggX, this.loggY, 180, 60, 20);
     fill(this.r + 20, this.g + 20, this.b + 20);
-    rect(this.x + 5, this.y + 5, 20, 50, 20);
+    rect(this.loggX + 5, this.loggY + 5, 20, 50, 20);
+    pop();
+  }
+}
+// design for leaf
+class LeafForward extends loggMethodForward {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
+  }
+  draw() {
+    push();
+    translate(0, 0);
+    noStroke();
+    fill(this.r, this.g, this.b);
+    rect(this.loggX, this.loggY, 180, 50, 50);
+
+    fill(this.r - 20, this.g - 20, this.b - 20);
+    ellipse(this.loggX + 40, this.loggY + 20, 30);
+    ellipse(this.loggX + 80, this.loggY + 30, 25);
+    ellipse(this.loggX + 120, this.loggY + 25, 20);
+    ellipse(this.loggX + 160, this.loggY + 20, 10);
+    pop();
+  }
+}
+
+// design for rat
+class RatForwards extends carMethodBack {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
+  }
+  draw() {
+    push();
+    translate(0, 0);
+    noStroke();
+    fill(this.r, this.g, this.b);
+    rect(this.x, this.y, 100, 50, 30);
+    ellipse(this.x + 30, this.y + 5, 25);
+    ellipse(this.x + 30, this.y + 45, 25);
+    fill(0, 0, 0);
+    ellipse(this.x + 10, this.y + 15, 8);
+    ellipse(this.x + 10, this.y + 35, 8);
+    pop();
+
+    push();
+    translate(0, 0);
+    fill(this.r, this.g, this.b);
+    line(this.x + 100, this.y + 25, this.x + 80, this.y - 30);
+    pop();
+  }
+}
+
+// design for rat
+class RatBackwards extends carMethodForward {
+  constructor(x, y, r, g, b, speed, addSpeed) {
+    super(x, y, r, g, b, speed, addSpeed);
+  }
+
+  draw() {
+    push();
+    translate(0, 0);
+    noStroke();
+    fill(this.r, this.g, this.b);
+    rect(this.x, this.y, 100, 50, 30);
+    ellipse(this.x + 70, this.y + 5, 25);
+    ellipse(this.x + 70, this.y + 45, 25);
+    fill(0, 0, 0);
+    ellipse(this.x + 80, this.y + 15, 8);
+    ellipse(this.x + 80, this.y + 35, 8);
+    pop();
+
+    push();
+    translate(0, 0);
+    fill(this.r, this.g, this.b);
+    line(this.x, this.y + 25, this.x - 20, this.y - 5);
     pop();
   }
 }
@@ -321,26 +393,56 @@ const logg1b = new LoggForward(400, 190, 102, 61, 46, 0, 0);
 const logg1c = new LoggForward(700, 190, 102, 61, 46, 0, 0);
 
 //level two
-// car line one
+// car line 1
 const car2a = new CarBackward(150, 435, 50, 50, 50, 0, 0);
 const car2b = new CarBackward(300, 435, 150, 150, 150, 0, 0);
 const car2c = new CarBackward(560, 435, 50, 100, 100, 0, 0);
 const car2d = new CarBackward(800, 435, 163, 106, 90, 0, 0);
-// car line two
+// car line 2
 const car2e = new CarForward(700, 355, 181, 161, 60, 0, 0);
 const car2f = new CarForward(450, 355, 50, 100, 100, 0, 0);
 const car2g = new CarForward(100, 355, 50, 50, 50, 0, 0);
-// car line three
+// car line 3
 const car2h = new CarBackward(100, 115, 163, 106, 90, 0, 1);
 const car2i = new CarBackward(350, 115, 181, 161, 60, 0, 1);
 const car2j = new CarBackward(700, 115, 50, 100, 100, 0, 1);
+
+// leaves
+const leaf2a = new LeafForward(230, 190, 171, 107, 34, 0, 0);
+const leaf2b = new LeafForward(500, 190, 171, 107, 34, 0, 0);
+const leaf2c = new LeafForward(0, 190, 171, 107, 34, 0, 0);
+
+// level three
+const rat3a = new RatForwards(50, 435, 50, 50, 50, 0, 1);
+const rat3b = new RatForwards(250, 435, 50, 50, 50, 0, 1);
+const rat3c = new RatForwards(480, 435, 50, 50, 50, 0, 1);
+const rat3d = new RatForwards(650, 435, 50, 50, 50, 0, 1);
+const rat3e = new RatForwards(800, 435, 50, 50, 50, 0, 1);
+
+const rat3f = new RatBackwards(5, 355, 50, 50, 50, 0, 0);
+const rat3g = new RatBackwards(150, 355, 50, 50, 50, 0, 0);
+const rat3h = new RatBackwards(500, 355, 50, 50, 50, 0, 0);
+const rat3i = new RatBackwards(600, 355, 50, 50, 50, 0, 0);
+const rat3j = new RatBackwards(700, 355, 50, 50, 50, 0, 0);
+
+const rat3k = new RatForwards(20, 190, 50, 50, 50, 0, 0);
+const rat3l = new RatForwards(200, 190, 50, 50, 50, 0, 0);
+const rat3m = new RatForwards(480, 190, 50, 50, 50, 0, 0);
+const rat3n = new RatForwards(600, 190, 50, 50, 50, 0, 0);
+const rat3o = new RatForwards(750, 190, 50, 50, 50, 0, 0);
+
+const rat3p = new RatForwards(120, 115, 50, 50, 50, 0, 1);
+const rat3q = new RatForwards(290, 115, 50, 50, 50, 0, 1);
+const rat3r = new RatForwards(400, 115, 50, 50, 50, 0, 1);
+const rat3s = new RatForwards(650, 115, 50, 50, 50, 0, 1);
+const rat3t = new RatForwards(790, 115, 50, 50, 50, 0, 1);
+
 //obscales arrays
-//level one
-let carsForward = [car1a, car1b, car1c, car1d, car1e, car1f];
-let carsBackward = [car1g, car1h];
+// array level one
+let carsForward = [car1a, car1b, car1c, car1d, car1e, car1f, car1g, car1h];
 let loggForward = [logg1a, logg1b, logg1c];
 
-//level two
+//array level two
 let carsBackward2 = [
   car2a,
   car2b,
@@ -353,6 +455,31 @@ let carsBackward2 = [
   car2i,
   car2j,
 ];
+let LeavesForward = [leaf2a, leaf2b, leaf2c];
+
+// array level three
+let ratForward = [
+  rat3a,
+  rat3b,
+  rat3c,
+  rat3d,
+  rat3e,
+  rat3f,
+  rat3g,
+  rat3h,
+  rat3i,
+  rat3j,
+  rat3k,
+  rat3l,
+  rat3m,
+  rat3n,
+  rat3o,
+  rat3p,
+  rat3q,
+  rat3r,
+  rat3s,
+  rat3t,
+];
 
 function draw() {
   // start
@@ -362,15 +489,11 @@ function draw() {
   } else if (gameState === "park") {
     parkScreen();
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       carsForward[i].draw();
       carsForward[i].update();
     }
 
-    for (let i = 0; i < 2; i++) {
-      carsBackward[i].draw();
-      carsBackward[i].update();
-    }
     for (let i = 0; i < 3; i++) {
       loggForward[i].draw();
       loggForward[i].update();
@@ -385,20 +508,31 @@ function draw() {
       carsBackward2[i].update();
     }
 
+    for (let i = 0; i < 3; i++) {
+      LeavesForward[i].draw();
+      LeavesForward[i].update();
+    }
+
     character(catX, catY);
+
     // wall
   } else if (gameState === "wall") {
     wallScreen();
 
-    for (let i = 0; i < 3; i++) {
-      carsForward[i].draw();
-      carsForward[i].update();
+    for (let i = 0; i < 20; i++) {
+      ratForward[i].draw();
+      ratForward[i].update();
     }
 
     character(catX, catY);
     // end
   } else if (gameState === "end") {
-    background(115, 65, 125);
+    image(img3, 0, 0);
+    textSize(50);
+    fill(255, 255, 255);
+    text("You lost a life", 250, 100);
+
+    rect(300, 500, 200, 100);
   }
 }
 
