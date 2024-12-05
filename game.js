@@ -248,8 +248,15 @@ class loggFunctionForward {
       this.x = this.x + (this.speed + this.addSpeed);
     } else if (this.x > 800) {
       this.x = 0 - 180;
+    } 
+
+    if (catY === this.y + 40 && catX > this.x && catX < this.x + 100) {
+      gameState = "park";
     }
   }
+
+
+
 }
 //design for cars on screen 1 and two moving forwards
 class CarForward extends carFunctionForward {
@@ -308,7 +315,7 @@ const car1b = new CarForward(300, 435, 0, 255, 255, 0, 0);
 const car1c = new CarForward(600, 435, 255, 0, 255, 0, 0);
 const car1d = new CarForward(700, 355, 255, 255, 255, 0, 1);
 const car1e = new CarForward(0, 355, 255, 255, 100, 0, 1);
-const car1f = new CarForward(450, 355, 0, 0, 100, 0, 1);
+const car1f = new CarForward(400, 355, 0, 0, 100, 0, 1);
 
 const car1g = new CarBackward(200, 115, 200, 200, 200, 0, 2);
 const car1h = new CarBackward(700, 115, 250, 250, 200, 0, 2);
