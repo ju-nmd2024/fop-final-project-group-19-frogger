@@ -1,7 +1,9 @@
 let img1;
 let img2;
 let img3;
-let gameState = "park";
+let img4;
+
+let gameState = "win";
 let gameLives = 3;
 let catX = 400;
 let catY = 550;
@@ -10,6 +12,7 @@ function setup() {
   img1 = loadImage("startscreen.png");
   img2 = loadImage("endscreen.png");
   img3 = loadImage("verysadcat.png");
+  img4 = loadImage("endscreen.png");
   createCanvas(800, 600);
 }
 // cat
@@ -30,7 +33,12 @@ function character(x, y) {
 }
 //image for start screen
 function startScreen() {
-  image(img1, 0, 0);
+  image(img1, 0, 50);
+  fill(0, 0, 0);
+  rect(500, 400, 200, 80);
+  fill(255, 255, 255);
+  textSize(40);
+  text("START", 540, 450);
 }
 //background for first game screen
 function parkScreen() {
@@ -140,7 +148,50 @@ function wallScreen() {
   line(700, 425, 700, 490);
 }
 
-//you lost a life screen
+//dead screen
+function deadScreen() {
+  push();
+  noStroke();
+  fill(255, 255, 255);
+  rect(300, 450, 200, 80);
+
+  fill(0, 0, 0);
+  textSize(40);
+  text("Try again!", 310, 500);
+
+  textSize(20);
+  fill(255, 255, 255);
+  text("You lost a life                      lives remain", 200, 100);
+
+  text(gameLives, 410, 100);
+  pop();
+}
+//kill screen
+function killScreen() {
+  image(img3, 0, 0);
+  fill(255, 255, 255);
+  textSize(40);
+  text("You died", 310, 100);
+
+  fill(255, 255, 255);
+  rect(300, 450, 200, 80);
+  fill(0, 0, 0);
+  textSize(40);
+  text("Try again!", 310, 500);
+}
+
+function winScreen() {
+  image(img4, 0, 50);
+  noStroke();
+  fill(255, 255, 255);
+  textSize(30);
+  text("You win!", 340, 530);
+  fill(0, 0, 0);
+  rect(600, 470, 150, 60);
+  fill(255, 255, 255);
+  textSize(20);
+  text("Play again", 625, 505);
+}
 
 //method for car like obscales moving forwards
 class carMethodForward {
@@ -173,6 +224,7 @@ class carMethodForward {
 
     if (catY === this.y + 35 && catX > this.x && catX < this.x + 100) {
       gameState = "end";
+      gameLives = gameLives - 1;
     }
   }
 }
@@ -207,6 +259,7 @@ class carMethodBack {
     //checks for collision
     if (catY === this.y + 35 && catX > this.x && catX < this.x + 100) {
       gameState = "end";
+      gameLives = gameLives - 1;
     }
   }
 }
@@ -242,16 +295,26 @@ class loggMethodForward {
       this.loggX = -180;
     }
 
-    // checks for collision
-    if (catY === this.loggY + 40) {
-      if (catX > this.loggX && catX < this.loggX + 180) {
-        isOnLogg = true;
-        catX = catX + this.speed + this.addSpeed;
-      }
-      if (!isOnLogg) {
-        gameState = "end";
+    // // checks for collision
+    // if (catY === this.loggY + 40) {
+    //   if (catX > this.loggX && catX < this.loggX + 180) {
+    //     console.log("log");
+    //     catX = catX + this.speed;
+    //   } else {
+    //     console.log("water");
+    //     gameLives = gameLives - 1;
+    //     catY = 550;
+    //   }
+    // }
+  }
+
+  check(x, y) {
+    if (y === this.loggY + 40) {
+      if (x > this.loggX && x < this.loggX + 180) {
+        return true;
       }
     }
+    return false;
   }
 }
 
@@ -483,34 +546,61 @@ let ratForward = [
 
 function draw() {
   // start
+
+  if (gameLives === 0) {
+    gameState = "dead";
+  }
+
   if (gameState === "start") {
     startScreen();
     // park
   } else if (gameState === "park") {
     parkScreen();
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < carsForward.length; i++) {
       carsForward[i].draw();
       carsForward[i].update();
     }
 
-    for (let i = 0; i < 3; i++) {
+    let catIsonlogg = false;
+    for (let i = 0; i < loggForward.length; i++) {
       loggForward[i].draw();
       loggForward[i].update();
+
+      let tempCatisonlogg = loggForward[i].check(catX, catY);
+      if (tempCatisonlogg === true) {
+        catIsonlogg = true;
+        catX = catX + loggForward[i].speed;
+      }
+    }
+    if (catIsonlogg === false && catY === loggForward[0].loggY + 40) {
+      gameLives = gameLives - 1;
+      gameState = "end";
     }
     character(catX, catY);
+
     // street
   } else if (gameState === "street") {
     streetScreen();
 
-    for (let i = 0; i < 10; i++) {
+    let catIsonlogg = false;
+    for (let i = 0; i < carsBackward2.length; i++) {
       carsBackward2[i].draw();
       carsBackward2[i].update();
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < LeavesForward.length; i++) {
       LeavesForward[i].draw();
       LeavesForward[i].update();
+      let tempCatisonlogg = LeavesForward[i].check(catX, catY);
+      if (tempCatisonlogg === true) {
+        catIsonlogg = true;
+        catX = catX + LeavesForward[i].speed;
+      }
+    }
+    if (catIsonlogg === false && catY === LeavesForward[0].loggY + 40) {
+      gameLives = gameLives - 1;
+      gameState = "end";
     }
 
     character(catX, catY);
@@ -519,7 +609,7 @@ function draw() {
   } else if (gameState === "wall") {
     wallScreen();
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < ratForward.length; i++) {
       ratForward[i].draw();
       ratForward[i].update();
     }
@@ -528,21 +618,19 @@ function draw() {
     // end
   } else if (gameState === "end") {
     image(img3, 0, 0);
-    textSize(50);
-    fill(255, 255, 255);
-    text("You lost a life", 250, 100);
-
-    rect(300, 500, 200, 100);
+    deadScreen();
+  } else if (gameState === "dead") {
+    killScreen();
+  } else if (gameState === "win") {
+    winScreen();
   }
 }
-
 function keyPressed() {
   if (keyCode === UP_ARROW && catY > 80) {
     catY = catY - 80;
   } else if (keyCode === DOWN_ARROW && catY < 540) {
     catY = catY + 80;
-  }
-  if (keyCode === LEFT_ARROW && catX > 90) {
+  } else if (keyCode === LEFT_ARROW && catX > 90) {
     catX = catX - 80;
   } else if (keyCode === RIGHT_ARROW && catX < 710) {
     catX = catX + 80;
@@ -557,18 +645,44 @@ function keyPressed() {
     catX = 400;
     catY = 550;
   } else if (catY <= 70 && gameState === "wall") {
-    gameState = "end";
+    gameState = "win";
   }
 }
 
 function mouseClicked() {
   if (
-    gameState === "parkInfo" &&
-    mouseX > 345 &&
-    mouseX < 475 &&
-    mouseY > 445 &&
-    mouseY < 500
+    gameState === "start" &&
+    mouseX > 500 &&
+    mouseX < 700 &&
+    mouseY > 400 &&
+    mouseY < 480
   ) {
     gameState = "park";
+  } else if (
+    gameState === "end" &&
+    mouseX > 300 &&
+    mouseX < 500 &&
+    mouseY > 450 &&
+    mouseY < 530
+  ) {
+    gameState = "park";
+    catX = 400;
+    catY = 550;
+  } else if (
+    gameState === "end" &&
+    mouseX > 300 &&
+    mouseX < 500 &&
+    mouseY > 450 &&
+    mouseY < 530
+  ) {
+    gameState = "start";
+  } else if (
+    gameState === "win" &&
+    mouseX > 600 &&
+    mouseX < 750 &&
+    mouseY > 475 &&
+    mouseY < 530
+  ) {
+    gameState = "start";
   }
 }
